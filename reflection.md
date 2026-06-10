@@ -14,9 +14,9 @@ Document at least 3 bugs you found. Add rows as needed.
 
 | Input | Expected Behavior | Actual Behavior | Console Output / Error |
 |-------|-------------------|-----------------|------------------------|
-| | | | |
-| | | | |
-| | | | |
+| Secret = 73 Guess = 22|Game to say go higher|go lower | None |
+|Entering a guest|Score to decrese|every other attemp, score resets to zero |None |
+| Secret = 73 |Guess = 88|Game to say go lower|go higher | None | 
 
 ---
 

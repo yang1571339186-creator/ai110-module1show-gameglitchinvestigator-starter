@@ -34,17 +34,17 @@ def check_guess(guess, secret):
         return "Win", "🎉 Correct!"
 
     try:
-        if guess > secret:
-            return "Too High", "📈 Go HIGHER!"
+        if guess < secret:
+            return "Too Low", "📈 Go HIGHER!"
         else:
-            return "Too Low", "📉 Go LOWER!"
+            return "Too High", "📉 Go LOWER!"
     except TypeError:
         g = str(guess)
         if g == secret:
             return "Win", "🎉 Correct!"
-        if g > secret:
-            return "Too High", "📈 Go HIGHER!"
-        return "Too Low", "📉 Go LOWER!"
+        if g < secret:
+            return "Too Low", "📈 Go HIGHER!"
+        return "Too High", "📉 Go LOWER!"
 
 
 def update_score(current_score: int, outcome: str, attempt_number: int):
@@ -55,8 +55,6 @@ def update_score(current_score: int, outcome: str, attempt_number: int):
         return current_score + points
 
     if outcome == "Too High":
-        if attempt_number % 2 == 0:
-            return current_score + 5
         return current_score - 5
 
     if outcome == "Too Low":
@@ -142,7 +140,7 @@ if st.session_state.status != "playing":
         st.success("You already won. Start a new game to play again.")
     else:
         st.error("Game over. Start a new game to try again.")
-    st.stop()
+
 
 if submit:
     st.session_state.attempts += 1
@@ -155,10 +153,8 @@ if submit:
     else:
         st.session_state.history.append(guess_int)
 
-        if st.session_state.attempts % 2 == 0:
-            secret = str(st.session_state.secret)
-        else:
-            secret = st.session_state.secret
+        secret = st.session_state.secret
+            
 
         outcome, message = check_guess(guess_int, secret)
 
