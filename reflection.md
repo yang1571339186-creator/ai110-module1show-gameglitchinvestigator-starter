@@ -14,10 +14,9 @@ Document at least 3 bugs you found. Add rows as needed.
 
 | Input | Expected Behavior | Actual Behavior | Console Output / Error |
 | --- | --- | --- | --- |
-| Secret = 73, Guess = 22 | Game to say "go higher" | Says "go lower" | None |
-| Enter new game, play multiple times | Score decreases with wrong guesses | Score resets to zero every other attempt | None |
-| Secret = 73, Guess = 88 | Game to say "go lower" | Says "go higher" | None |
-| New game | New game with low and high range according to difficulty | Defaults to 0 to 100 every time | None |
+| Secret = 73, Guess = 22 | Game to say "go higher" | Says "go lower" | The logic under the Check Guess function is back wards |
+| Enter new game, play multiple times | Score decreases with wrong guesses | Score resets to zero every other attempt | Under the update_score function resets score to 0 after every even attempt |
+| New game | New game with low and high range according to difficulty | Defaults to 0 to 100 every time | When the new game button is clicked, app.py generates a new game with a low and high range between 0 and 100 instead of using the low and high parameters |
 | Start new game | Banner shows correct low and high numbers based on difficulty | Banner outputs 0 to 100 every time | None | 
 
 ---

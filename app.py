@@ -31,6 +31,15 @@ def parse_guess(raw: str):
 
 
 def check_guess(guess, secret):
+    """
+    Compare guess to secret and return (outcome, message).
+
+    outcome examples: "Win", "Too High", "Too Low"
+    """
+    if (type(guess) != int):
+        guess = int(guess)
+    if (type(secret) != int):
+        secret = int(secret)
     if guess == secret:
         return "Win", "🎉 Correct!"
 
@@ -40,7 +49,8 @@ def check_guess(guess, secret):
         else:
             return "Too High", "📉 Go LOWER!"
     except TypeError:
-        g = str(guess)
+        g = int(guess)
+        secret = int(secret)
         if g == secret:
             return "Win", "🎉 Correct!"
         if g < secret:

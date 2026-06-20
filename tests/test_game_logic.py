@@ -1,141 +1,147 @@
 import pytest
-from logic_utils import check_guess, parse_guess, update_score
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).parent.parent))
+from logic_utils import check_guess, parse_guess, update_score, get_range_for_difficulty
 
 
-class TestCheckGuess:
-    """Tests for the check_guess function."""
-
-    def test_winning_guess(self):
-        """If the secret is 50 and guess is 50, it should be a win."""
-        outcome, message = check_guess(50, 50)
-        assert outcome == "Win"
-        assert message == "🎉 Correct!"
-
-    def test_guess_too_high(self):
-        """If secret is 50 and guess is 60, hint should be 'Too High'."""
-        outcome, message = check_guess(60, 50)
-        assert outcome == "Too High"
-        assert message == "📉 Go LOWER!"
-
-    def test_guess_too_low(self):
-        """If secret is 50 and guess is 40, hint should be 'Too Low'."""
-        outcome, message = check_guess(40, 50)
-        assert outcome == "Too Low"
-        assert message == "📈 Go HIGHER!"
-
-    def test_guess_much_higher(self):
-        """Test with a much higher guess."""
-        outcome, message = check_guess(100, 1)
-        assert outcome == "Too High"
-
-    def test_guess_much_lower(self):
-        """Test with a much lower guess."""
-        outcome, message = check_guess(1, 100)
-        assert outcome == "Too Low"
-
-    def test_guess_with_strings(self):
-        """Test that function handles string comparison."""
-        outcome, message = check_guess("50", "50")
-        assert outcome == "Win"
+def test_get_range_for_difficulty():
+    assert get_range_for_difficulty("easy") == (1, 20)
+    assert get_range_for_difficulty("normal") == (1, 100)
+    assert get_range_for_difficulty("hard") == (1, 50)
+    assert get_range_for_difficulty("invalid") == (1, 100)
+    assert get_range_for_difficulty("EASY") == (1, 20)
+    assert get_range_for_difficulty("Normal") == (1, 100)
+    assert get_range_for_difficulty("HARD") == (1, 50)
+    assert get_range_for_difficulty("  easy  ") == (1, 20)
+    assert get_range_for_difficulty("\tnormal\n") == (1, 100)
 
 
-class TestParseGuess:
-    """Tests for the parse_guess function."""
+def test_parse_guess():
+    ok, guess, error = parse_guess("42")
+    assert ok is True
+    assert guess == 42
+    assert error is None
 
-    def test_valid_integer_guess(self):
-        """Parse a valid integer string."""
-        ok, guess, error = parse_guess("42")
-        assert ok is True
-        assert guess == 42
-        assert error is None
+    ok, guess, error = parse_guess("0")
+    assert ok is True
+    assert guess == 0
+    assert error is None
 
-    def test_valid_float_guess(self):
-        """Parse a valid float string (should convert to int)."""
-        ok, guess, error = parse_guess("42.7")
-        assert ok is True
-        assert guess == 42
-        assert error is None
+    ok, guess, error = parse_guess("-5")
+    assert ok is True
+    assert guess == -5
+    assert error is None
 
-    def test_empty_string(self):
-        """Empty string should return error."""
-        ok, guess, error = parse_guess("")
-        assert ok is False
-        assert guess is None
-        assert error == "Enter a guess."
+    ok, guess, error = parse_guess("3.7")
+    assert ok is True
+    assert guess == 3
+    assert error is None
 
-    def test_none_input(self):
-        """None input should return error."""
-        ok, guess, error = parse_guess(None)
-        assert ok is False
-        assert guess is None
-        assert error == "Enter a guess."
+    ok, guess, error = parse_guess("10.9")
+    assert ok is True
+    assert guess == 10
+    assert error is None
 
-    def test_invalid_number(self):
-        """Non-numeric string should return error."""
-        ok, guess, error = parse_guess("hello")
-        assert ok is False
-        assert guess is None
-        assert error == "That is not a number."
+    ok, guess, error = parse_guess("")
+    assert ok is False
+    assert guess is None
+    assert error == "Enter a guess."
 
-    def test_negative_number(self):
-        """Negative numbers should parse correctly."""
-        ok, guess, error = parse_guess("-5")
-        assert ok is True
-        assert guess == -5
-        assert error is None
+    ok, guess, error = parse_guess(None)
+    assert ok is False
+    assert guess is None
+    assert error == "Enter a guess."
 
-    def test_zero(self):
-        """Zero should parse correctly."""
-        ok, guess, error = parse_guess("0")
-        assert ok is True
-        assert guess == 0
-        assert error is None
+    ok, guess, error = parse_guess("abc")
+    assert ok is False
+    assert guess is None
+    assert error == "That is not a number."
+
+    ok, guess, error = parse_guess("12.34.56")
+    assert ok is False
+    assert guess is None
+    assert error == "That is not a number."
+
+    ok, guess, error = parse_guess("  50  ")
+    assert ok is True
+    assert guess == 50
+    assert error is None
 
 
-class TestUpdateScore:
-    """Tests for the update_score function."""
+def test_check_guess():
+    outcome, message = check_guess(42, 42)
+    assert outcome == "Win"
+    assert message == "🎉 Correct!"
 
-    def test_win_first_attempt(self):
-        """Winning on first attempt (attempt 0) should award 90 points."""
-        new_score = update_score(0, "Win", 0)
-        assert new_score == 90
+    outcome, message = check_guess(10, 50)
+    assert outcome == "Too Low"
+    assert message == "📈 Go HIGHER!"
 
-    def test_win_second_attempt(self):
-        """Winning on second attempt (attempt 1) should award 80 points."""
-        new_score = update_score(0, "Win", 1)
-        assert new_score == 80
+    outcome, message = check_guess(100, 50)
+    assert outcome == "Too High"
+    assert message == "📉 Go LOWER!"
 
-    def test_win_many_attempts(self):
-        """Winning after many attempts should have minimum of 10 points."""
-        new_score = update_score(0, "Win", 10)
-        assert new_score == 10
+    outcome, message = check_guess(0, 0)
+    assert outcome == "Win"
+    assert message == "🎉 Correct!"
 
-    def test_too_high_even_attempt(self):
-        """Too High on even attempt number should add 5 points."""
-        new_score = update_score(0, "Too High", 0)
-        assert new_score == 5
+    outcome, message = check_guess(-5, -5)
+    assert outcome == "Win"
+    assert message == "🎉 Correct!"
 
-    def test_too_high_odd_attempt(self):
-        """Too High on odd attempt number should subtract 5 points."""
-        new_score = update_score(10, "Too High", 1)
-        assert new_score == 5
+    outcome, message = check_guess(-10, 0)
+    assert outcome == "Too Low"
+    assert message == "📈 Go HIGHER!"
 
-    def test_too_low_always_subtracts(self):
-        """Too Low should always subtract 5 points."""
-        new_score = update_score(10, "Too Low", 0)
-        assert new_score == 5
+    outcome, message = check_guess(5, -10)
+    assert outcome == "Too High"
+    assert message == "📉 Go LOWER!"
 
-    def test_too_low_multiple_times(self):
-        """Test Too Low multiple times."""
-        score = 20
-        score = update_score(score, "Too Low", 1)
-        score = update_score(score, "Too Low", 2)
-        assert score == 10
+    outcome, message = check_guess("42", "42")
+    assert outcome == "Win"
+    assert message == "🎉 Correct!"
 
-    def test_accumulating_score(self):
-        """Test accumulating score through multiple guess outcomes."""
-        score = 0
-        score = update_score(score, "Too High", 0)  # +5
-        score = update_score(score, "Too High", 1)  # -5
-        score = update_score(score, "Too Low", 2)   # -5
-        assert score == -5
+    outcome, message = check_guess("10", "50")
+    assert outcome == "Too Low"
+    assert message == "📈 Go HIGHER!"
+
+    outcome, message = check_guess("100", "50")
+    assert outcome == "Too High"
+    assert message == "📉 Go LOWER!"
+
+
+def test_update_score():
+    score = update_score(0, "Win", 0)
+    assert score == 100
+
+    score = update_score(0, "Win", 1)
+    assert score == 90
+
+    score = update_score(0, "Win", 9)
+    assert score == 10
+
+    score = update_score(0, "Win", 10)
+    assert score == 10
+
+
+    score = update_score(100, "Too High", 0)
+    assert score == 95
+
+    score = update_score(100, "Too Low", 0)
+    assert score == 95
+
+    score = update_score(200, "Too High", 5)
+    assert score == 195
+
+    score = update_score(200, "Too Low", 10)
+    assert score == 195
+
+    score = update_score(0, "Unknown", 0)
+    assert score == 0
+
+    score = update_score(50, "Unknown", 5)
+    assert score == 50
+
+
