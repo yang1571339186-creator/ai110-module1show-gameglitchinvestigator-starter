@@ -33,20 +33,32 @@ It wrote the code, ran away, and now the game is unplayable.
 
 Describe your fixed game in numbered steps so a reader can follow along without watching a video:
 
-1. <!-- Describe this step -->
-2. <!-- Describe this step -->
-3. <!-- Describe this step -->
-4. <!-- Describe this step -->
-5. <!-- Add more steps as needed -->
+1. Launch the game via the streamlit command.
+2. Select the appropriate difficulty for you, select 'New Game' to generate new game with the appropriate difficulty
+3. Begin guesss! By default the game will guide you with hints, but you can unselect the hint button to turn off this feature
+4. Guess until you will, or lose, enter your guess in the guess box and submit your guess
+5. Click new game to start a new game
 
 **Screenshot** *(optional)*: <!-- Insert a screenshot of your fixed, winning game here -->
+![alt text](image.png)
 
 ## 🧪 Test Results
 
 ```
-# Paste your pytest output here, e.g.:
-# pytest tests/
-# ========================= X passed in 0.XXs =========================
+========================================================================================== test session starts ==========================================================================================
+platform win32 -- Python 3.13.7, pytest-9.0.3, pluggy-1.6.0 -- C:\Users\yang1\AppData\Local\Programs\Python\Python313\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\yang1\Documents\AI101\ai110-module1show-gameglitchinvestigator-starter
+configfile: pytest.ini
+plugins: anyio-4.13.0
+collected 4 items                                                                                                                                                                                        
+
+tests/test_game_logic.py::test_get_range_for_difficulty PASSED                                                                                                                                     [ 25%]
+tests/test_game_logic.py::test_parse_guess PASSED                                                                                                                                                  [ 50%]
+tests/test_game_logic.py::test_check_guess PASSED                                                                                                                                                  [ 75%]
+tests/test_game_logic.py::test_update_score PASSED                                                                                                                                                 [100%]
+
+=========================================================================================== 4 passed in 0.04s ===========================================================================================
 ```
 
 ## 🚀 Stretch Features
