@@ -13,10 +13,12 @@ Answer each question in 3 to 5 sentences. Be specific and honest about what actu
 Document at least 3 bugs you found. Add rows as needed.
 
 | Input | Expected Behavior | Actual Behavior | Console Output / Error |
-|-------|-------------------|-----------------|------------------------|
-| Secret = 73 Guess = 22|Game to say go higher|go lower | None |
-|Entering a guest|Score to decrese|every other attemp, score resets to zero |None |
-| Secret = 73 |Guess = 88|Game to say go lower|go higher | None | 
+| --- | --- | --- | --- |
+| Secret = 73, Guess = 22 | Game to say "go higher" | Says "go lower" | None |
+| Enter new game, play multiple times | Score decreases with wrong guesses | Score resets to zero every other attempt | None |
+| Secret = 73, Guess = 88 | Game to say "go lower" | Says "go higher" | None |
+| New game | New game with low and high range according to difficulty | Defaults to 0 to 100 every time | None |
+| Start new game | Banner shows correct low and high numbers based on difficulty | Banner outputs 0 to 100 every time | None | 
 
 ---
 

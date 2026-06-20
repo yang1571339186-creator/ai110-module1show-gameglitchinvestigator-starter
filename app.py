@@ -2,11 +2,12 @@ import random
 import streamlit as st
 
 def get_range_for_difficulty(difficulty: str):
-    if difficulty == "Easy":
+    difficulty = difficulty.strip().lower()
+    if difficulty == "easy":
         return 1, 20
-    if difficulty == "Normal":
+    if difficulty == "normal":
         return 1, 100
-    if difficulty == "Hard":
+    if difficulty == "hard":
         return 1, 50
     return 1, 100
 
@@ -84,7 +85,7 @@ attempt_limit = attempt_limit_map[difficulty]
 
 low, high = get_range_for_difficulty(difficulty)
 
-st.sidebar.caption(f"Range: {low} to {high}")
+st.sidebar.caption(f"Range: {low} to {high} ")
 st.sidebar.caption(f"Attempts allowed: {attempt_limit}")
 
 if "secret" not in st.session_state:
@@ -105,7 +106,7 @@ if "history" not in st.session_state:
 st.subheader("Make a guess")
 
 st.info(
-    f"Guess a number between 1 and 100. "
+    f"Guess a number between {low} and {high} "
     f"Attempts left: {attempt_limit - st.session_state.attempts}"
 )
 
@@ -131,7 +132,7 @@ with col3:
 
 if new_game:
     st.session_state.attempts = 0
-    st.session_state.secret = random.randint(1, 100)
+    st.session_state.secret = random.randint(low, high)
     st.success("New game started.")
     st.rerun()
 
@@ -140,7 +141,7 @@ if st.session_state.status != "playing":
         st.success("You already won. Start a new game to play again.")
     else:
         st.error("Game over. Start a new game to try again.")
-
+    st.stop()
 
 if submit:
     st.session_state.attempts += 1
